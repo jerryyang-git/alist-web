@@ -45,14 +45,14 @@ const Password = () => {
           direction={{ "@initial": "column", "@sm": "row" }}
           columnGap="$1"
         >
-          <Text>{t("global.have_account")}</Text>
-          <Text
+          <Text>{t("密码请加入首页Q群或TG获取")}</Text>
+          {/* <Text
             color="$info9"
             as={LinkWithBase}
             href={`/@login?redirect=${encodeURIComponent(location.pathname)}`}
           >
             {t("global.go_login")}
-          </Text>
+          </Text> */}
         </Flex>
         <HStack spacing="$2">
           <Button colorScheme="neutral" onClick={back}>

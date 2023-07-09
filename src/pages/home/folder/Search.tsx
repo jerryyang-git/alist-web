@@ -159,6 +159,7 @@ const Search = () => {
           <VStack w="$full" spacing="$2">
             <HStack w="$full" spacing="$2">
               <Input
+                placeholder="可使用空格分隔关键字/词检索"
                 id="search-input"
                 value={keywords()}
                 onInput={(e) => {
@@ -186,6 +187,7 @@ const Search = () => {
                 <Text size="2xl" my="$8">
                   {t("home.search.no_result")}
                 </Text>
+                <Text>{t("⚠:搜索前请先点击🎮Galgame目录输入密码完成验证")}</Text>
               </Match>
             </Switch>
             <VStack w="$full">

@@ -33,9 +33,10 @@ const PermissionBadge = (props: { can: boolean; children: JSXElement }) => {
 const Profile = () => {
   const t = useT()
   useManageTitle("manage.sidemenu.profile")
-  const { to, searchParams } = useRouter()
+  const { to } = useRouter()
   const [username, setUsername] = createSignal(me().username)
   const [password, setPassword] = createSignal("")
+  const [confirmPassword, setConfirmPassword] = createSignal("")
   const [loading, save] = useFetch(
     (ssoID?: boolean): PEmptyResp =>
       r.post("/me/update", {
@@ -45,6 +46,10 @@ const Profile = () => {
       })
   )
   const saveMe = async (ssoID?: boolean) => {
+    if (password() && password() !== confirmPassword()) {
+      notify.warning(t("users.confirm_password_not_same"))
+      return
+    }
     const resp = await save(ssoID)
     handleResp(resp, () => {
       setMe({ ...me(), username: username() })
@@ -92,13 +97,17 @@ const Profile = () => {
                 color="$info9"
                 as={LinkWithBase}
                 href={`/@login?redirect=${encodeURIComponent(
-                  location.pathname
+                  location.pathname,
                 )}`}
               >
                 {t("global.go_login")}
               </Text> */}
               {/* 图片内容 */}
-              <img src="https://img.jerryyang.link/2023/07/09/1688890029466.webp" width="50%" height ="50%"></img>
+              <img
+                src="https://img.jerryyang.link/2023/07/09/1688890029466.webp"
+                width="50%"
+                height="50%"
+              ></img>
             </HStack>
           </>
         }
@@ -115,6 +124,8 @@ const Profile = () => {
               }}
             />
           </FormControl>
+        </SimpleGrid>
+        <SimpleGrid gap="$2" columns={{ "@initial": 1, "@md": 2 }}>
           <FormControl>
             <FormLabel for="password">{t("users.change_password")}</FormLabel>
             <Input
@@ -127,6 +138,21 @@ const Profile = () => {
               }}
             />
             <FormHelperText>{t("users.change_password-tips")}</FormHelperText>
+          </FormControl>
+          <FormControl>
+            <FormLabel for="confirm-password">
+              {t("users.confirm_password")}
+            </FormLabel>
+            <Input
+              id="confirm-password"
+              type="password"
+              placeholder="********"
+              value={confirmPassword()}
+              onInput={(e) => {
+                setConfirmPassword(e.currentTarget.value)
+              }}
+            />
+            <FormHelperText>{t("users.confirm_password-tips")}</FormHelperText>
           </FormControl>
         </SimpleGrid>
         <HStack spacing="$2">
@@ -158,11 +184,6 @@ const Profile = () => {
               <Button
                 onClick={() => {
                   const url = r.getUri() + "/auth/sso?method=get_sso_id"
-                  const popup = window.open(
-                    url,
-                    "authPopup",
-                    "width=500,height=600"
-                  )
                 }}
               >
                 {t("users.connect_sso")}

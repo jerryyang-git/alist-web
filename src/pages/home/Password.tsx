@@ -37,6 +37,7 @@ const Password = () => {
           }
         }}
         onInput={(e) => setPassword(e.currentTarget.value)}
+        placeholder="✨密码请加入首页Q群或TG获取"
       />
       <HStack w="$full" justifyContent="space-between">
         <Flex
@@ -45,7 +46,7 @@ const Password = () => {
           direction={{ "@initial": "column", "@sm": "row" }}
           columnGap="$1"
         >
-          <Text>{t("密码请加入首页Q群或TG获取")}</Text>
+          <Text>{t("🚨退群人数达到五人更改密码")}</Text>
           {/* <Text
             color="$info9"
             as={LinkWithBase}

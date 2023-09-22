@@ -117,7 +117,7 @@ export const fetchText = async (
   url: string,
   ts = true
 ): Promise<{
-  content: string
+  content: ArrayBuffer | string
   contentType?: string
 }> => {
   try {
@@ -129,7 +129,7 @@ export const fetchText = async (
           }
         : undefined,
     })
-    const content = await resp.data.text()
+    const content = await resp.data.arrayBuffer()
     const contentType = resp.headers["content-type"]
     return { content, contentType }
   } catch (e) {
@@ -146,12 +146,14 @@ export const fsSearch = async (
   parent: string,
   keywords: string,
   password = "",
+  scope = 0,
   page = 1,
   per_page = 100
 ): Promise<FsSearchResp> => {
   return r.post("/fs/search", {
     parent,
     keywords,
+    scope,
     page,
     per_page,
     password,

@@ -88,6 +88,11 @@
     "typescript-natural-sort": "^0.7.2"
   },
   "lint-staged": {
-    "**/*": "prettier --write"
+    "*.{js,css,html}": [
+      "prettier --write"
+    ],
+    "!**/*.{png,webp}": [
+      "prettier --write"
+    ]
   }
 }

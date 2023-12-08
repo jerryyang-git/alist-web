@@ -41,17 +41,18 @@ const PermissionBadge = (props: { can: boolean; children: JSXElement }) => {
 const Profile = () => {
   const t = useT()
   useManageTitle("manage.sidemenu.profile")
-  const { to } = useRouter()
+  const { searchParams, to } = useRouter()
   const [username, setUsername] = createSignal(me().username)
   const [password, setPassword] = createSignal("")
   const [confirmPassword, setConfirmPassword] = createSignal("")
+  const usecompatibility = getSettingBool("sso_compatibility_mode")
   const [loading, save] = useFetch(
     (ssoID?: boolean): PEmptyResp =>
       r.post("/me/update", {
         username: ssoID ? me().username : username(),
         password: ssoID ? "" : password(),
         sso_id: me().sso_id,
-      })
+      }),
   )
 
   interface WebauthnItem {
@@ -65,15 +66,15 @@ const Profile = () => {
   }
 
   const [getauthncredentialsloading, getauthncredentials] = useFetch(
-    (): PResp<WebauthnItem[]> => r.get("/authn/getcredentials")
+    (): PResp<WebauthnItem[]> => r.get("/authn/getcredentials"),
   )
   const [, getauthntemp] = useFetch(
-    (): PResp<Webauthntemp> => r.get("/authn/webauthn_begin_registration")
+    (): PResp<Webauthntemp> => r.get("/authn/webauthn_begin_registration"),
   )
   const [postregistrationloading, postregistration] = useFetch(
     (
       session: string,
-      credentials: RegistrationPublicKeyCredential
+      credentials: RegistrationPublicKeyCredential,
     ): PEmptyResp =>
       r.post(
         "/authn/webauthn_finish_registration",
@@ -82,8 +83,8 @@ const Profile = () => {
           headers: {
             session: session,
           },
-        }
-      )
+        },
+      ),
   )
   const saveMe = async (ssoID?: boolean) => {
     if (password() && password() !== confirmPassword()) {
@@ -100,6 +101,11 @@ const Profile = () => {
         to("")
       }
     })
+  }
+  const ssoID = searchParams["sso_id"]
+  if (ssoID) {
+    setMe({ ...me(), sso_id: ssoID })
+    saveMe(true)
   }
   function messageEvent(event: MessageEvent) {
     const data = event.data
@@ -236,11 +242,11 @@ const Profile = () => {
               <Button
                 onClick={() => {
                   const url = r.getUri() + "/auth/sso?method=get_sso_id"
-                  const popup = window.open(
-                    url,
-                    "authPopup",
-                    "width=500,height=600"
-                  )
+                  if (usecompatibility) {
+                    window.location.href = url
+                    return
+                  }
+                  window.open(url, "authPopup", "width=500,height=600")
                 }}
               >
                 {t("users.connect_sso")}
@@ -293,7 +299,7 @@ const Profile = () => {
                   await postregistration(session, browserresponse),
                   () => {
                     notify.success(t("users.add_webauthn_success"))
-                  }
+                  },
                 )
               } catch (error: unknown) {
                 if (error instanceof Error) notify.error(error.message)

@@ -2,12 +2,13 @@ import { Center, VStack, Icon, Checkbox } from "@hope-ui/solid"
 import { Motion } from "@motionone/solid"
 import { useContextMenu } from "solid-contextmenu"
 import { batch, createMemo, createSignal, Show } from "solid-js"
-import { CenterLoading, LinkWithPush, ImageWithError } from "~/components"
+import { CenterLoading, ImageWithError } from "~/components"
 import { useLink, usePath, useUtil } from "~/hooks"
 import { checkboxOpen, getMainColor, selectAll, selectIndex } from "~/store"
 import { ObjType, StoreObj } from "~/types"
 import { bus } from "~/utils"
 import { getIconByObj } from "~/utils/icon"
+import { useOpenItemWithCheckbox } from "./helper"
 
 export const ImageItem = (props: { obj: StoreObj; index: number }) => {
   const { isHide } = useUtil()
@@ -24,6 +25,7 @@ export const ImageItem = (props: { obj: StoreObj; index: number }) => {
   )
   const { show } = useContextMenu({ id: 1 })
   const { rawLink } = useLink()
+  const isShouldOpenItem = useOpenItemWithCheckbox()
   return (
     <Motion.div
       initial={{ opacity: 0, scale: 0.9 }}
@@ -81,8 +83,15 @@ export const ImageItem = (props: { obj: StoreObj; index: number }) => {
             fallbackErr={objIcon}
             src={rawLink(props.obj)}
             loading="lazy"
-            onClick={() => {
-              bus.emit("gallery", props.obj.name)
+            cursor={
+              !checkboxOpen() || isShouldOpenItem() ? "pointer" : "default"
+            }
+            on:click={(e: MouseEvent) => {
+              if (!checkboxOpen() || e.altKey) {
+                bus.emit("gallery", props.obj.name)
+                return
+              }
+              selectIndex(props.index, !props.obj.selected)
             }}
           />
         </Center>

@@ -31,7 +31,7 @@ export const GridItem = (props: { obj: StoreObj; index: number }) => {
   )
   const [hover, setHover] = createSignal(false)
   const showCheckbox = createMemo(
-    () => checkboxOpen() && (hover() || props.obj.selected)
+    () => checkboxOpen() && (hover() || props.obj.selected),
   )
   const { show } = useContextMenu({ id: 1 })
   const { pushHref, to } = useRouter()
@@ -62,8 +62,7 @@ export const GridItem = (props: { obj: StoreObj; index: number }) => {
         on:click={(e: MouseEvent) => {
           if (!checkboxOpen()) return
           e.preventDefault()
-          if (e.altKey) {
-            // click with alt/option key
+          if (isShouldOpenItem()) {
             to(pushHref(props.obj.name))
             return
           }

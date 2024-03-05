@@ -21,7 +21,7 @@ export const ImageItem = (props: { obj: StoreObj; index: number }) => {
   )
   const [hover, setHover] = createSignal(false)
   const showCheckbox = createMemo(
-    () => checkboxOpen() && (hover() || props.obj.selected)
+    () => checkboxOpen() && (hover() || props.obj.selected),
   )
   const { show } = useContextMenu({ id: 1 })
   const { rawLink } = useLink()
@@ -86,8 +86,8 @@ export const ImageItem = (props: { obj: StoreObj; index: number }) => {
             cursor={
               !checkboxOpen() || isShouldOpenItem() ? "pointer" : "default"
             }
-            on:click={(e: MouseEvent) => {
-              if (!checkboxOpen() || e.altKey) {
+            on:click={() => {
+              if (!checkboxOpen() || isShouldOpenItem()) {
                 bus.emit("gallery", props.obj.name)
                 return
               }

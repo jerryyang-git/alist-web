@@ -145,7 +145,7 @@ const Profile = () => {
             >
               <AlertIcon mr="$2_5" />
               {/* <AlertTitle mr="$2_5">{t("users.guest-tips")}</AlertTitle> */}
-              <Text>{t("洗洗睡吧不公开")}</Text>
+              <Text>{t("洗洗睡吧后台不公开")}</Text>
               <Text>{t("点击左上角按钮并点击主页，回到主页")}</Text>
               {/* <AlertDescription>{t("users.modify_nothing")}</AlertDescription> */}
             </Alert>

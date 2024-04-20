@@ -272,7 +272,7 @@ const Search = () => {
                 }))}
               />
               <Input
-                placeholder="✨可用空格来分隔关键字搜索"
+                placeholder="✨输入关键字或标题🔍"
                 id="search-input"
                 value={keywords()}
                 onInput={(e) => {
@@ -301,8 +301,8 @@ const Search = () => {
                 <Text size="2xl" my="$8">
                   {t("home.search.no_result")}
                 </Text>
-                <Text>{t("❗请先点击🎮Galgame目录完成验证")}</Text>
-                <Text>{t("已验证请忽略")}</Text>
+                {/* <Text>{t("❗请先点击🎮Galgame目录完成验证")}</Text> */}
+                {/* <Text>{t("已验证请忽略")}</Text> */}
               </Match>
             </Switch>
             <VStack w="$full">

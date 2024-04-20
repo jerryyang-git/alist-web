@@ -290,7 +290,7 @@ const Profile = () => {
               return
             }
             const resp = await getauthntemp()
-            handleRespWithoutNotify(resp, async (data) => {
+            handleResp(resp, async (data) => {
               const options = parseCreationOptionsFromJSON(data.options)
               const session = data.session
               try {
